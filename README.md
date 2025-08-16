@@ -1,30 +1,13 @@
----
-title: ML Q&A Chatbot
-emoji: 🤖
-colorFrom: blue
-colorTo: green
-sdk: gradio
-sdk_version: 4.0.0
-app_file: app.py
-pinned: false
-license: mit
----
-
 # ML Q&A Chatbot
-
-![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
-![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Spaces-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 ## Overview
 
 This Hugging Face Space hosts an interactive **Machine Learning Q&A Chatbot** powered by a Retrieval-Augmented Generation (RAG) pipeline. The system uses a fine-tuned `facebook/opt-1.3b` model with LoRA adapters, a FAISS vector store for retrieval, and a Gradio interface for user interaction. It leverages 7,000 Q&A pairs from 14 JSON datasets (`ml_qa_synthetic_set_*.json`) to provide accurate, context-aware answers to machine learning questions. The project is deployed on **Hugging Face Spaces** (free CPU Basic tier) and supports metrics calculation (BLEU, ROUGE, semantic similarity, precision, recall, F1) in Google Colab.
 
 ### Key Features
-- **Model**: Fine-tuned `facebook/opt-1.3b` with 8-bit quantization (LoRA adapters, trained for 1428/1689 steps, losses 0.8630/0.9584).
+- **Model**: Fine-tuned `facebook/opt-1.3b` with 8-bit quantization (LoRA adapters, trained for 1428/1689 steps, losses 0.803300/0.936291).
 - **Retrieval**: FAISS vector store with `sentence-transformers/all-mpnet-base-v2` embeddings, retrieving top-3 relevant documents.
 - **Interface**: Gradio dashboard displaying answers by default, with a toggle for retrieval details (context and sources).
-- **Metrics**: Evaluates generation (BLEU, ROUGE, semantic similarity) and retrieval (precision, recall, F1) on a test set.
 - **Deployment**: Hosted at `https://huggingface.co/spaces/sravan837/ML_CHATBOT` for public access.
 - **Environment**: Supports free tiers (Colab T4 GPU for metrics, Spaces CPU Basic for deployment).
 
@@ -35,7 +18,6 @@ Ideal for students, researchers, and ML enthusiasts seeking quick answers to mac
 - `app.py`: Gradio app for Hugging Face Spaces, combining dataset loading, FAISS setup, RAG pipeline, and interface.
 - `requirements.txt`: Python dependencies for deployment.
 - `data/`: Contains 14 JSON datasets (`ml_qa_synthetic_set_*.json`, 7,000 Q&A pairs, 4,500 training, 501 validation).
-- `cell_7.py`: Metrics calculation script for Colab (BLEU, ROUGE, semantic similarity, precision, recall, F1).
 
 ## Installation and Setup
 
@@ -58,7 +40,7 @@ datasets>=2.14.0
 peft>=0.10.0
 trl>=0.7.0
 gradio>=4.0.0
-faiss-gpu>=1.7.2
+faiss-cpu>=1.7.2
 sentence-transformers>=2.2.2
 evaluate>=0.4.0
 accelerate>=0.20.0
@@ -139,37 +121,14 @@ Evaluate the RAG system (BLEU, ROUGE, semantic similarity, precision, recall, F1
    - **Cell 3**: Load 14 JSON datasets (4,500 training, 501 validation).
    - **Cell 4**: Set up FAISS (`k=3`).
    - **Cell 6**: Load model (`sravan837/opt-1.3b-finetuned`, `max_new_tokens=50`, no `max_length`).
-   - **Cell 7**: Run metrics (`cell_7.py`) with 3 test questions, no reranking, `batch_size=2`, `torch.cuda.empty_cache()`.
    - Skip **Cell 5** to avoid retraining.
 
-3. **Imports for `cell_7.py`**:
-   ```python
-   from evaluate import load
-   from sentence_transformers import SentenceTransformer, util
-   from sklearn.metrics import precision_score, recall_score, f1_score
-   from datasets import Dataset
-   import torch
-   ```
-
-4. **Sample Metrics** (example, actual values depend on data):
-   - Retrieval: `precision: 0.85`, `recall: 0.80`, `f1: 0.82`.
-   - Generation: `bleu: 0.25`, `rouge1: 0.45`, `rougeL: 0.40`, `semantic_similarity: 0.90`.
-
-### Issue Resolutions
-- **Metrics Runtime**: Reduced from ~10 minutes to ~1–2 minutes by using 3 test questions, disabling reranking, batching, and caching embeddings.
-- **Crashes**: Prevented by `torch.cuda.empty_cache()`, `max_new_tokens=50`, and smaller test set.
-- **Warnings**:
-  - Fixed `max_new_tokens=256`/`max_length=21` conflict by removing `max_length`.
-  - `bitsandbytes` casting warning (torch.bfloat16 to float16) is harmless.
 
 ## Usage
 - **Gradio App**:
   - Access at [huggingface.co/spaces/sravan837/ML_CHATBOT](https://huggingface.co/spaces/sravan837/ML_CHATBOT).
   - Enter questions (e.g., “What’s gradient boosting?”).
   - Toggle “Show Retrieval Details” for context and sources.
-- **Colab Metrics**:
-  - Run `cell_7.py` to evaluate performance.
-  - Adjust test size or `max_new_tokens` for trade-offs between accuracy and speed.
 
 ## Contributing
 Contributions are welcome! To contribute:
@@ -188,6 +147,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **SRAVAN-DSAI**: Built by Sravan Kodari, a Data Science enthusiast passionate about AI and ML.
 
 ## Contact
-For issues or suggestions, open a GitHub issue at [github.com/SRAVAN-DSAI/ML_RAG](https://github.com/SRAVAN-DSAI/ML_RAG) or contact [Sravan Kodari](https://www.linkedin.com/in/sravan-kodari-943654210/).
+For issues or suggestions, open a GitHub issue at [github.com/SRAVAN-DSAI/ML_RAG](https://github.com/SRAVAN-DSAI/ML_RAG) or contact [Sravan Kodari](https://www.linkedin.com/in/sravan-kodari/).
 
 ---
